@@ -25,12 +25,9 @@ header = {'user-agent': user}
 
 
 response = session.post(link, data, headers=header).text
-report_info = "http://zabbix.inet.eprib.ru/zabbix/report2.php?mode=1&from=now-3M&to=now&filter_groupid=9&filter_templateid=10552&tpl_triggerid=23057&hostgroupid=0&filter_set=1"
-#report_info = "http://zabbix.inet.eprib.ru/zabbix/report2.php?mode=1&from=now-3h&to=now&filter_groupid=9&filter_templateid=10552&tpl_triggerid=23058&hostgroupid=0&filter_set=1&filter_set=1"
-report_response = session.get(report_info).text
-#print(report_response)
-
-
+switches_info = "http://zabbix.inet.eprib.ru/zabbix/report2.php?mode=1&from=now-3M&to=now&filter_groupid=9&filter_templateid=10552&tpl_triggerid=23057&hostgroupid=0&filter_set=1"
+servers_report = "http://zabbix.inet.eprib.ru/zabbix/report2.php?mode=1&from=now-3M&to=now&filter_groupid=10&filter_templateid=10580&tpl_triggerid=24976&hostgroupid=0&filter_set=1"
+report_response = session.get(servers_report).text
 
 cookies_dict = [
 	{"domain": key.domain, "name": key.name, "path": key.path, "value": key.value}
@@ -41,7 +38,7 @@ session2 = requests.Session()
 for cookies in cookies_dict:
 	session2.cookies.set(**cookies)
 
-response2 = session2.get(report_info, headers=header).text
+response2 = session2.get(servers_report, headers=header).text
 soup = BeautifulSoup(response2, 'lxml')
 block = soup.find('table', class_="list-table")
 all_hosts = block.find_all('tr')
@@ -49,13 +46,11 @@ all_host_data = []
 for host in all_hosts:
 	host_data = host.find_all('td')
 	result= []
-	#print("===NEW-ELEMEMT===")
 	host_list = []
 	for el_host_data in host_data:
 		el_host_data = str(el_host_data)
 		el_host_data = re.sub(r'\<[^<>]*\>', '', el_host_data)
 		host_list.append(el_host_data)
-		#print(host_list)
 
 	all_host_data.append(host_list)
 print(all_host_data)
@@ -73,26 +68,7 @@ for host in all_host_data:
     new_all_host_date.append(host)
 print(new_all_host_date)
 
-jinja2_template.template_html_report(new_all_host_date)
-
-
-
-
-print("===========================")
+jinja2_template.template_html_report(new_all_host_date, "servers")
 
 with open("zabbix.html", "w", encoding="utf-8") as file:
     file.write(block.text)
-
-
-
-
-
-
-
-
-# Session
-# Authorization
-# Get/Set cookies
-
-# http://zabbix.elprib.ru/
-# Admin:BARhfrelf7
