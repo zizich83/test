@@ -2,8 +2,14 @@ import requests
 import fake_useragent
 import re
 import validators
-import jinja2_template
+import templates
+import config_parse
 from bs4 import BeautifulSoup
+
+config = config_parse.parse_cfg("config.cfg")
+
+user = config['Zabbix_auth']['user']
+password = config['Zabbix_auth'] ['password']
 
 
 session = requests.Session()
@@ -14,8 +20,8 @@ def ip_test(list):
 
 link = 'http://zabbix.inet.eprib.ru/zabbix/index.php'
 data = {
-	"name": "Admin",
-	"password": "BARhfrelf7",
+	"name": user,
+	"password": password,
 	"autologin": "1",
 	"enter": "Sign+in"
 }
@@ -72,8 +78,9 @@ def zabbix_reports(file_name, link):
 			del host[1]
 		new_all_host_date.append(host)
 	print(new_all_host_date)
-
-	jinja2_template.template_html_report(new_all_host_date, file_name)
+# Creating HTML files
+	templates.template_html(new_all_host_date, file_name)
+	templates.template_csv(new_all_host_date, file_name)
 
 for key,value in reports_info.items():
     print(key, ":", value)

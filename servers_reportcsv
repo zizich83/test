@@ -1,0 +1,5 @@
+Host Name,Problems,OK
+srv-backup1,,100.0000%
+srv-backup4,0.0008%,99.9992%
+srv-starwind1,,100.0000%
+srv-starwind2,,100.0000%

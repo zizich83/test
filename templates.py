@@ -1,6 +1,7 @@
 from jinja2 import Template
+import csv
 
-def template_html_report(list,file_name):
+def template_html(list,file_name):
     template = Template("""
     <style>
        table {
@@ -31,6 +32,13 @@ def template_html_report(list,file_name):
 
     with open(file_name + '.html', "w", encoding="utf-8") as file:
         file.write(html_jinja2)
+
+def template_csv(list,filename):
+    cols = ["Host Name", "Problems" , "OK"]
+    with open(filename + 'csv', 'w') as file:
+        write = csv.writer((file))
+        write.writerow(cols)
+        write.writerows(list)
 
 
 
